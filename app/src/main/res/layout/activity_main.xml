@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.zhulf.www.poterduffxfermode.MainActivity">
 
-    <com.zhulf.www.poterduffxfermode.LayerView
+    <com.zhulf.www.poterduffxfermode.XfermodeView
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

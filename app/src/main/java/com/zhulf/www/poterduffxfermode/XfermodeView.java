@@ -16,6 +16,8 @@ import android.view.View;
  */
 
 public class XfermodeView extends View {
+    private Bitmap mSrcB;
+    private Bitmap mDstB;
     private Paint paint;
     private Paint mDSTpaint;
     private Paint mSrcBluePaint;
@@ -27,50 +29,61 @@ public class XfermodeView extends View {
 
     public XfermodeView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        //setLayerType(View.LAYER_TYPE_HARDWARE, null);
         xFermode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
-        mDSTpaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mDSTpaint.setColor(0xFFFFCC44);
-        mDSTpaint.setAlpha(255);
+//        mDSTpaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//        mDSTpaint.setColor(0xFFFFCC44);
+//        mDSTpaint.setAlpha(255);
+//
+//        mSrcBluePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//        mSrcBluePaint.setColor(0xFF66AAFF);
 
-        mSrcBluePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mSrcBluePaint.setColor(0xFF66AAFF);
         paint = new Paint();
+    }
+
+    /**
+     * onSizeChanged方法一般是视图大小发生变化的时候回调。具体看源码是在layout的过程中出发的，
+     * 在layout方法中会调用setFrame方法，在setFrame方法中又调用了sizeChange，在该方法里面回调了onSizeChanged，
+     * 然后才回去回调onLayout过程
+     * 可以在该方法中获取view的宽和高
+     * @param w
+     * @param h
+     * @param oldw
+     * @param oldh
+     */
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mDstB = getCircleBitmap();
+        mSrcB = getRetangleBitmap();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        int sc = canvas.saveLayer(0, 0, canvas.getWidth(),canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
-
-        Bitmap mDstB = getCircleBitmap();
-        Bitmap mSrcB = getRetangleBitmap();
-        canvas.drawBitmap(mDstB, 0, 0, paint);
-        paint.setXfermode(xFermode);
-        canvas.drawBitmap(mSrcB, 0, 0, paint);
-        paint.setXfermode(null);
-
-        canvas.restoreToCount(sc);
-
+        //方法一
 //        int sc = canvas.saveLayer(0, 0, canvas.getWidth(),canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
-//        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//        paint.setColor(0xFFFFCC44);
-//        int r = canvas.getWidth() / 4;
-//        canvas.drawCircle(r,r,r,paint);
 //
-//        Bitmap bitmap = Bitmap.createBitmap(canvas.getWidth(),canvas.getHeight(), Bitmap.Config.ARGB_8888);
-//        Canvas mCanvas = new Canvas(bitmap);
-////        paint.reset();
+//        canvas.drawBitmap(mDstB, 0, 0, paint);
 //        paint.setXfermode(xFermode);
-//        paint.setColor(0xFF66AAFF);
-//        mCanvas.drawRect(r,r,r*3,r*3,paint);
-//
-//        canvas.drawBitmap(bitmap,0,0,null);
+//        canvas.drawBitmap(mSrcB, 0, 0, paint);
 //        paint.setXfermode(null);
+//
 //        canvas.restoreToCount(sc);
 
+        //方法二
+        int sc = canvas.saveLayer(0, 0, canvas.getWidth(),canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
+        paint.setColor(0xFFFFCC44);
+        int r = canvas.getWidth() / 4;
+        canvas.drawCircle(r,r,r,paint);
 
+        paint.setXfermode(xFermode);
+        canvas.drawBitmap(mSrcB,0,0,paint);
+        paint.setXfermode(null);
+        canvas.restoreToCount(sc);
+
+        //方法三
 //    	int sc = canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);//增加一个缓冲层
 //        canvas.drawCircle(400,400,400,mDSTpaint);
-//
 //
 //        Bitmap bitmap = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888);
 //        Canvas ca = new Canvas(bitmap);
