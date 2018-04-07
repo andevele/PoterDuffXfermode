@@ -29,8 +29,8 @@ public class XfermodeView extends View {
 
     public XfermodeView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        //setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        xFermode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
+//        setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        xFermode = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
 //        mDSTpaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 //        mDSTpaint.setColor(0xFFFFCC44);
 //        mDSTpaint.setAlpha(255);
@@ -60,26 +60,26 @@ public class XfermodeView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //方法一
-//        int sc = canvas.saveLayer(0, 0, canvas.getWidth(),canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
-//
-//        canvas.drawBitmap(mDstB, 0, 0, paint);
-//        paint.setXfermode(xFermode);
-//        canvas.drawBitmap(mSrcB, 0, 0, paint);
-//        paint.setXfermode(null);
-//
-//        canvas.restoreToCount(sc);
+        //方法一 可以用硬件加速代替saveLayer，硬件加速见上面
+        int sc = canvas.saveLayer(0, 0, canvas.getWidth(),canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
+
+        canvas.drawBitmap(mDstB, 0, 0, paint);
+        paint.setXfermode(xFermode);
+        canvas.drawBitmap(mSrcB, 0, 0, paint);
+        paint.setXfermode(null);
+
+        canvas.restoreToCount(sc);
 
         //方法二
-        int sc = canvas.saveLayer(0, 0, canvas.getWidth(),canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
-        paint.setColor(0xFFFFCC44);
-        int r = canvas.getWidth() / 4;
-        canvas.drawCircle(r,r,r,paint);
-
-        paint.setXfermode(xFermode);
-        canvas.drawBitmap(mSrcB,0,0,paint);
-        paint.setXfermode(null);
-        canvas.restoreToCount(sc);
+//        int sc = canvas.saveLayer(0, 0, canvas.getWidth(),canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
+//        paint.setColor(0xFFFFCC44);
+//        int r = canvas.getWidth() / 4;
+//        canvas.drawCircle(r,r,r,paint);
+//
+//        paint.setXfermode(xFermode);
+//        canvas.drawBitmap(mSrcB,0,0,paint);
+//        paint.setXfermode(null);
+//        canvas.restoreToCount(sc);
 
         //方法三
 //    	int sc = canvas.saveLayer(0, 0, canvas.getWidth(), canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);//增加一个缓冲层
