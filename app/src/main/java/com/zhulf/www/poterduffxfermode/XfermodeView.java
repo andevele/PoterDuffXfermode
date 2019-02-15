@@ -29,8 +29,10 @@ public class XfermodeView extends View {
 
     public XfermodeView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-//        setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        xFermode = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
+        //硬件加速,实现离屏缓冲的方式之一
+        setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        xFermode = new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER);
+//        xFermode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
 //        mDSTpaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 //        mDSTpaint.setColor(0xFFFFCC44);
 //        mDSTpaint.setAlpha(255);
@@ -61,14 +63,15 @@ public class XfermodeView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         //方法一 可以用硬件加速代替saveLayer，硬件加速见上面
-        int sc = canvas.saveLayer(0, 0, canvas.getWidth(),canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
+        //此处设置临时离屏缓冲
+//        int sc = canvas.saveLayer(0, 0, canvas.getWidth(),canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
 
         canvas.drawBitmap(mDstB, 0, 0, paint);
         paint.setXfermode(xFermode);
         canvas.drawBitmap(mSrcB, 0, 0, paint);
         paint.setXfermode(null);
 
-        canvas.restoreToCount(sc);
+//        canvas.restoreToCount(sc);
 
         //方法二
 //        int sc = canvas.saveLayer(0, 0, canvas.getWidth(),canvas.getHeight(), null, Canvas.ALL_SAVE_FLAG);
@@ -105,7 +108,7 @@ public class XfermodeView extends View {
         //c1.drawARGB(0, 0, 0, 0);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(0xFF66AAFF);
-        c1.drawRect(400, 400, 1200, 1200, paint);
+        c1.drawRect(400, 400, 700, 700, paint);
         return rectangleBitmap;
     }
 
@@ -118,7 +121,7 @@ public class XfermodeView extends View {
         //c.drawARGB(0, 0, 0, 0);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(0xFFFFCC44);
-        c.drawCircle(400, 400, 400, paint);
+        c.drawCircle(400, 400, 200, paint);
         return circleBitmap;
     }
 }
